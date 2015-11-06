@@ -245,4 +245,8 @@ pip-log.txt
 *.pidb.meta
 
 # Unity3D Generated File On Crash Reports
-sysinfo.txt
+sysinfo.txtAssets/EnemyGenerator
+
+## Other
+
+Assets/EnemyGenerator/
