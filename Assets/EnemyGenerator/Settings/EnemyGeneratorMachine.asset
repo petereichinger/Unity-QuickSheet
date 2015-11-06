@@ -14,19 +14,43 @@ MonoBehaviour:
   templatePath: QuickSheet/ExcelPlugin/Templates
   scriptFilePath: Assets/EnemyGenerator/Data
   editorScriptFilePath: Assets/EnemyGenerator/Data/Editor
-  sheetName: Test.xlsx
-  workSheetName: Sheet1
+  sheetName: EnemyGenerator.xlsx
+  workSheetName: Hulls
   headerColumnList:
   - type: 0
-    name: Test123
+    name: Name
     isEnable: 0
     isArray: 0
   - type: 0
-    name: Test
+    name: Cost
     isEnable: 0
     isArray: 0
-  excelFilePath: Assets/EnemyGenerator/Test.xlsx
+  - type: 0
+    name: HP
+    isEnable: 0
+    isArray: 0
+  - type: 0
+    name: SizeCategory
+    isEnable: 0
+    isArray: 0
+  - type: 0
+    name: ModelPrefab
+    isEnable: 0
+    isArray: 0
+  - type: 0
+    name: Scale
+    isEnable: 0
+    isArray: 0
+  - type: 0
+    name: Carrier
+    isEnable: 0
+    isArray: 0
+  - type: 0
+    name: Weaponmounts
+    isEnable: 0
+    isArray: 0
+  excelFilePath: Assets/EnemyGenerator/EnemyGenerator.xlsx
   SheetNames:
-  - Sheet1
-  - Sheet2
+  - Hulls
+  - Weapons
   currentSelectedSheet: 0
