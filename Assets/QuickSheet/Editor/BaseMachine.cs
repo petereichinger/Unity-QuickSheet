@@ -1,146 +1,128 @@
-﻿///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+using System.Collections;
+using System.Collections.Generic;
+
 ///
 /// BaseMachine.cs
-/// 
+///
 /// (c)2014 Kim, Hyoun Woo
 ///
 ///////////////////////////////////////////////////////////////////////////////
 using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
 
-namespace UnityEditor
-{
-    [System.Serializable]
-    public class HeaderColumn
-    {
-        public CellType type;
-        public string name;
-        public bool isEnable;
-        public bool isArray;
-        public HeaderColumn nextArrayItem;
+namespace UnityEditor {
 
-        // used to order columns by ascending. (only need on excel-plugin)
-        public int OrderNO { get; set; }
-    }
+	[System.Serializable]
+	public class HeaderColumn {
+		public CellType type;
+		public string name;
+		public bool isEnable;
+		public bool isArray;
+		public HeaderColumn nextArrayItem;
 
-    public class BaseMachine : ScriptableObject
-    {
+		// used to order columns by ascending. (only need on excel-plugin)
+		public int OrderNO { get; set; }
+	}
 
-        [ExposeProperty]
-        public string TemplatePath
-        {
-            get { return templatePath; }
-            set { templatePath = value; }
-        }
+	public class BaseMachine : ScriptableObject {
 
-        [SerializeField]
-        private string templatePath = "QuickSheet/Templates";
+		[ExposeProperty]
+		public string TemplatePath {
+			get { return templatePath; }
+			set { templatePath = value; }
+		}
 
-        [ExposeProperty]
-        public string RuntimeClassPath
-        {
-            get { return scriptFilePath; }
-            set { scriptFilePath = value; }
-        }
+		[SerializeField]
+		private string templatePath = "QuickSheet/Templates";
 
-        /// <summary>
-        /// path the created ScriptableObject class file will be located.
-        /// </summary>
-        [SerializeField]
-        private string scriptFilePath;
+		[ExposeProperty]
+		public string RuntimeClassPath {
+			get { return scriptFilePath; }
+			set { scriptFilePath = value; }
+		}
 
-        [ExposeProperty]
-        public string EditorClassPath
-        {
-            get { return editorScriptFilePath; }
-            set { editorScriptFilePath = value; }
-        }
+		/// <summary>path the created ScriptableObject class file will be located.</summary>
+		[SerializeField]
+		private string scriptFilePath;
 
-        /// <summary>
-        /// path the created editor script files will be located.
-        /// </summary>
-        [SerializeField]
-        private string editorScriptFilePath;
+		[ExposeProperty]
+		public string EditorClassPath {
+			get { return editorScriptFilePath; }
+			set { editorScriptFilePath = value; }
+		}
 
-        //[ExposeProperty]
-        //public string DataFilePath
-        //{
-        //    get { return dataFilePath; }
-        //    set { dataFilePath = value; }
-        //}
+		/// <summary>path the created editor script files will be located.</summary>
+		[SerializeField]
+		private string editorScriptFilePath;
 
-        /// <summary>
-        /// path the created asset file will be located.
-        /// </summary>
-        //[SerializeField]
-        //private string dataFilePath;
+		//[ExposeProperty]
+		//public string DataFilePath
+		//{
+		//    get { return dataFilePath; }
+		//    set { dataFilePath = value; }
+		//}
 
-        [ExposeProperty]
-        public string SpreadSheetName
-        {
-            get { return sheetName; }
-            set { sheetName = value; }
-        }
+		/// <summary>path the created asset file will be located.</summary>
+		//[SerializeField]
+		//private string dataFilePath;
 
-        [SerializeField]
-        private string sheetName;
+		[ExposeProperty]
+		public string SpreadSheetName {
+			get { return sheetName; }
+			set { sheetName = value; }
+		}
 
-        [ExposeProperty]
-        public string WorkSheetName
-        {
-            get { return workSheetName; }
-            set { workSheetName = value; }
-        }
+		[SerializeField]
+		private string sheetName;
 
-        [SerializeField]
-        private string workSheetName;
+		[ExposeProperty]
+		public string WorkSheetName {
+			get { return workSheetName; }
+			set { workSheetName = value; }
+		}
 
-        [System.NonSerialized]
-        public bool onlyCreateDataClass = false;
+		[SerializeField]
+		private string workSheetName;
 
-        public List<HeaderColumn> HeaderColumnList
-        {
-            get { return headerColumnList; }
-            set { headerColumnList = value;}
-        }
+		[System.NonSerialized]
+		public bool onlyCreateDataClass = false;
 
-        [SerializeField]
-        protected List<HeaderColumn> headerColumnList;
+		public List<HeaderColumn> HeaderColumnList {
+			get { return headerColumnList; }
+			set { headerColumnList = value; }
+		}
 
-        /// <summary>
-        /// Return true, if the list is instantiated and has any its item more than one.
-        /// </summary>
-        /// <returns></returns>
-        public bool HasHeadColumn()
-        {
-            if (headerColumnList != null && headerColumnList.Count > 0)
-                return true;
+		[SerializeField]
+		protected List<HeaderColumn> headerColumnList;
 
-            return false;
-        }
+		/// <summary>
+		/// Return true, if the list is instantiated and has any its item more than one.
+		/// </summary>
+		/// <returns></returns>
+		public bool HasHeadColumn() {
+			if (headerColumnList != null && headerColumnList.Count > 0)
+				return true;
 
-        protected readonly string DEFAULT_CLASS_PATH = "Scripts/Runtime";
-        protected readonly string DEFAULT_EDITOR_PATH = "Scripts/Editor";
+			return false;
+		}
 
-        protected void OnEnable()
-        {
-            if (headerColumnList == null)
-                headerColumnList = new List<HeaderColumn>();
-        }
+		protected readonly string DEFAULT_CLASS_PATH = "Scripts/Runtime";
+		protected readonly string DEFAULT_EDITOR_PATH = "Scripts/Editor";
 
-        /// <summary>
-        /// Initialize with default value whenever the asset file is enabled.
-        /// </summary>
-        public void ReInitialize()
-        {
-            if (string.IsNullOrEmpty(RuntimeClassPath))
-                RuntimeClassPath = DEFAULT_CLASS_PATH;
-            if (string.IsNullOrEmpty(EditorClassPath))
-                EditorClassPath = DEFAULT_EDITOR_PATH;
+		protected void OnEnable() {
+			if (headerColumnList == null)
+				headerColumnList = new List<HeaderColumn>();
+		}
 
-            // reinitialize. it does not need to be serialized.
-            onlyCreateDataClass = false;
-        }
-    }
+		/// <summary>Initialize with default value whenever the asset file is enabled.</summary>
+		public void ReInitialize() {
+			if (string.IsNullOrEmpty(RuntimeClassPath))
+				RuntimeClassPath = DEFAULT_CLASS_PATH;
+			if (string.IsNullOrEmpty(EditorClassPath))
+				EditorClassPath = DEFAULT_EDITOR_PATH;
+
+			// reinitialize. it does not need to be serialized.
+			onlyCreateDataClass = false;
+		}
+	}
 }

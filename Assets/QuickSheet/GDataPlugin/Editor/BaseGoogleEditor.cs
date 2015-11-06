@@ -1,124 +1,107 @@
 ///////////////////////////////////////////////////////////////////////////////
-///
-/// BaseGoogleEditor.cs
-/// 
-/// (c)2013 Kim, Hyoun Woo
-///
-///////////////////////////////////////////////////////////////////////////////
-using UnityEngine;
-using UnityEditor;
-
+using Google.GData.Client;
+using Google.GData.Spreadsheets;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
 
 // to resolve TlsException error.
 using System.Net;
 using System.Net.Security;
+using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
+using System.Text.RegularExpressions;
+using UnityEditor;
 
-using Google.GData.Client;
-using Google.GData.Spreadsheets;
+///
+/// BaseGoogleEditor.cs
+///
+/// (c)2013 Kim, Hyoun Woo
+///
+///////////////////////////////////////////////////////////////////////////////
+using UnityEngine;
 
-/// 
 /// A BaseEditor class.
-/// 
 public class BaseGoogleEditor<T> : Editor //where T : BaseDatabase
-{	
-    // custom data 
-    //protected BaseDatabase database; 
-    
-    // property draw
-    protected PropertyField[] databaseFields;
-    protected PropertyField[] dataFields;
-    
-    protected List<PropertyField[]> pInfoList = new List<PropertyField[]>();
-        
-    /// 
-    /// Actively ignore security concerns to resolve TlsException error.
-    /// 
-    /// See: http://www.mono-project.com/UsingTrustedRootsRespectfully
-    ///
-    public static bool Validator (object sender, X509Certificate certificate, X509Chain chain, 
-                                  SslPolicyErrors sslPolicyErrors)
-    {
-        return true;
-    }
+{
+	// custom data
+	//protected BaseDatabase database;
 
-    public virtual void OnEnable()
-    {
-        // resolves TlsException error
-        ServicePointManager.ServerCertificateValidationCallback = Validator;
+	// property draw
+	protected PropertyField[] databaseFields;
 
-        GoogleDataSettings settings = GoogleDataSettings.Instance;		
-        if (settings != null)
-        {
-            if (string.IsNullOrEmpty(settings.OAuth2Data.client_id) ||
-                string.IsNullOrEmpty(settings.OAuth2Data.client_secret))
-                Debug.LogWarning("Client_ID and Client_Sceret is empty. Reload .json file.");
+	protected PropertyField[] dataFields;
 
-            if (string.IsNullOrEmpty(settings._AccessCode))
-                Debug.LogWarning("AccessCode is empty. Redo authenticate again.");
-        }
-        else
-        {
-            Debug.LogError("Failed to get google data settings. See the google data setting if it has correct path.");
-            return;
-        }
-                
-        //database = target as BaseDatabase;
-        //Debug.Log ("Target type: " + database.GetType().ToString());
-    }
+	protected List<PropertyField[]> pInfoList = new List<PropertyField[]>();
 
-    public override void OnInspectorGUI()
-    { 		
-        if (target == null)
-            return;
+	/// Actively ignore security concerns to resolve TlsException error.
+	/// 
+	/// See: http://www.mono-project.com/UsingTrustedRootsRespectfully
+	public static bool Validator(object sender, X509Certificate certificate, X509Chain chain,
+								  SslPolicyErrors sslPolicyErrors) {
+		return true;
+	}
 
-        if (GUILayout.Button("Download"))
-        {
-            if (!Load())
-                Debug.LogError("Failed to Load data from Google.");
-        }
+	public virtual void OnEnable() {
+		// resolves TlsException error
+		ServicePointManager.ServerCertificateValidationCallback = Validator;
 
-        EditorGUILayout.Separator();
+		GoogleDataSettings settings = GoogleDataSettings.Instance;
+		if (settings != null) {
+			if (string.IsNullOrEmpty(settings.OAuth2Data.client_id) ||
+				string.IsNullOrEmpty(settings.OAuth2Data.client_secret))
+				Debug.LogWarning("Client_ID and Client_Sceret is empty. Reload .json file.");
 
-        //this.DrawDefaultInspector();
-        ExposeProperties.Expose(databaseFields);
- 
-        foreach(PropertyField[] p in pInfoList)
-        {
-            ExposeProperties.Expose( p );	
-        }
-    }
-    
-    /// 
-    /// Should be reimplemented in derived class.
-    /// 
-    public virtual bool Load()
-    {
-        return true;
-    }
-    
-    protected List<int> SetArrayValue(string from)
-    {
-        List<int> tmp = new List<int>();
+			if (string.IsNullOrEmpty(settings._AccessCode))
+				Debug.LogWarning("AccessCode is empty. Redo authenticate again.");
+		} else {
+			Debug.LogError("Failed to get google data settings. See the google data setting if it has correct path.");
+			return;
+		}
 
-        CsvParser parser = new CsvParser(from);
+		//database = target as BaseDatabase;
+		//Debug.Log ("Target type: " + database.GetType().ToString());
+	}
 
-        foreach(string s in parser)
-        {
-            Debug.Log("parsed value: " + s);
-            tmp.Add(int.Parse(s));
-        }
+	public override void OnInspectorGUI() {
+		if (target == null)
+			return;
 
-        return tmp;
-    }	
+		if (GUILayout.Button("Download")) {
+			if (!Load())
+				Debug.LogError("Failed to Load data from Google.");
+		}
 
-    /*
+		EditorGUILayout.Separator();
+
+		//this.DrawDefaultInspector();
+		ExposeProperties.Expose(databaseFields);
+
+		foreach (PropertyField[] p in pInfoList) {
+			ExposeProperties.Expose(p);
+		}
+	}
+
+	/// Should be reimplemented in derived class.
+	public virtual bool Load() {
+		return true;
+	}
+
+	protected List<int> SetArrayValue(string from) {
+		List<int> tmp = new List<int>();
+
+		CsvParser parser = new CsvParser(from);
+
+		foreach (string s in parser) {
+			Debug.Log("parsed value: " + s);
+			tmp.Add(int.Parse(s));
+		}
+
+		return tmp;
+	}
+
+	/*
     static string[] SplitCamelCase(string stringToSplit)
     {
         if (!string.IsNullOrEmpty(stringToSplit))
@@ -126,7 +109,7 @@ public class BaseGoogleEditor<T> : Editor //where T : BaseDatabase
             List<string> words = new List<string>();
 
             string temp = string.Empty;
-                
+
             foreach (char ch in stringToSplit)
             {
                 if (ch >= 'a' && ch <= 'z')
@@ -144,10 +127,9 @@ public class BaseGoogleEditor<T> : Editor //where T : BaseDatabase
             return null;
     }
     */
-    
-    public static string SplitCamelCase(string inputCamelCaseString)
-    {
-        string sTemp = Regex.Replace(inputCamelCaseString, "([A-Z][a-z])", " $1", RegexOptions.Compiled).Trim();
-        return Regex.Replace(sTemp, "([A-Z][A-Z])", " $1", RegexOptions.Compiled).Trim();
-    }	
+
+	public static string SplitCamelCase(string inputCamelCaseString) {
+		string sTemp = Regex.Replace(inputCamelCaseString, "([A-Z][a-z])", " $1", RegexOptions.Compiled).Trim();
+		return Regex.Replace(sTemp, "([A-Z][A-Z])", " $1", RegexOptions.Compiled).Trim();
+	}
 }

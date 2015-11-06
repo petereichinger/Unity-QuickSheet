@@ -1,62 +1,54 @@
-﻿///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+using System.Collections;
+
 ///
 /// ExcelMachine.cs
-/// 
+///
 /// (c)2014 Kim, Hyoun Woo
 ///
 ///////////////////////////////////////////////////////////////////////////////
 using UnityEngine;
-using System.Collections;
 
-namespace UnityEditor
-{
-    /// <summary>
-    /// A class for various setting to read excel file and generated related script files.
-    /// </summary>
-    internal class ExcelMachine : BaseMachine
-    {
-        /// <summary>
-        /// where the .xls or .xlsx file is. The path should start with "Assets/". 
-        /// </summary>
-        public string excelFilePath;
+namespace UnityEditor {
 
-        // both are needed for popup editor control.
-        public string[] SheetNames = { "" };
-        public int CurrentSheetIndex 
-        {
-            get { return currentSelectedSheet; }
-            set { currentSelectedSheet = value;} 
-        }
+	/// <summary>
+	/// A class for various setting to read excel file and generated related script files.
+	/// </summary>
+	internal class ExcelMachine : BaseMachine {
 
-        [SerializeField]
-        protected int currentSelectedSheet = 0;
+		/// <summary>where the .xls or .xlsx file is. The path should start with "Assets/".</summary>
+		public string excelFilePath;
 
-        // excel and google plugin have its own template files, 
-        // so we need to set the different path when the asset file is created.
-        private readonly string excelTemplatePath = "QuickSheet/ExcelPlugin/Templates";
+		// both are needed for popup editor control.
+		public string[] SheetNames = { "" };
 
-        /// <summary>
-        /// Note: Called when the asset file is selected.
-        /// </summary>
-        protected new void OnEnable()
-        {
-            base.OnEnable();
+		public int CurrentSheetIndex {
+			get { return currentSelectedSheet; }
+			set { currentSelectedSheet = value; }
+		}
 
-            TemplatePath = excelTemplatePath;
-        }
+		[SerializeField]
+		protected int currentSelectedSheet = 0;
 
-        /// <summary>
-        /// A menu item which create a 'ExcelMachine' asset file.
-        /// </summary>
-        [MenuItem("Assets/Create/QuickSheet/Tools/Excel")]
-        public static void CreateScriptMachineAsset()
-        {
-            ExcelMachine inst = ScriptableObject.CreateInstance<ExcelMachine>();
-            string path = CustomAssetUtility.GetUniqueAssetPathNameOrFallback("New ExcelMachine.asset");
-            AssetDatabase.CreateAsset(inst, path);
-            AssetDatabase.SaveAssets();
-            Selection.activeObject = inst;
-        }
+		// excel and google plugin have its own template files, so we need to set the different path
+		// when the asset file is created.
+		private readonly string excelTemplatePath = "QuickSheet/ExcelPlugin/Templates";
 
-    }
+		/// <summary>Note: Called when the asset file is selected.</summary>
+		protected new void OnEnable() {
+			base.OnEnable();
+
+			TemplatePath = excelTemplatePath;
+		}
+
+		/// <summary>A menu item which create a 'ExcelMachine' asset file.</summary>
+		[MenuItem("Assets/Create/QuickSheet/Tools/Excel")]
+		public static void CreateScriptMachineAsset() {
+			ExcelMachine inst = ScriptableObject.CreateInstance<ExcelMachine>();
+			string path = CustomAssetUtility.GetUniqueAssetPathNameOrFallback("New ExcelMachine.asset");
+			AssetDatabase.CreateAsset(inst, path);
+			AssetDatabase.SaveAssets();
+			Selection.activeObject = inst;
+		}
+	}
 }
